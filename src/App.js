@@ -1,18 +1,40 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import axios from 'axios';
 import './App.css';
 
 class App extends Component {
+  state = {
+    notes: [],
+  }
+
+  componentDidMount() {
+    axios
+      .get('http://localhost:8000/api/notes/')
+      .then(response => {
+        // console.log(response.data);
+        this.setState({notes: response.data})
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+          <h1 className="App-title">Welcome to Notes!</h1>
         </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <div>
+          { this.state.notes.map((note, index) => {
+            return (
+              <div key={index}>
+                <p>Title: <strong>{note.title}</strong></p>
+                <p>{note.content}</p>
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   }
